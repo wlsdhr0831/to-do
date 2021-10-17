@@ -1,6 +1,6 @@
 .todoListBox{
     width: calc(100% - 60px);
-    height: 650px;
+    height: 500px;
     background-color: white;
     border-radius: 10px;
     margin-top: 50px;
