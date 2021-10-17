@@ -33,19 +33,27 @@ const todos = new TodoObject({ todoList, lastIdx: 0 });
 
 const inputBox = document.createElement("div");
 const input = document.createElement("input");
+input.placeholder = "할 일을 입력하세요.";
 input.addEventListener("keypress", (e) => {
   if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
 
-  button.click();
+  enterButton.click();
 });
 
-const button = document.createElement("button");
-button.innerText = "등록";
-button.addEventListener("click", () => {
+const enterButton = document.createElement("button");
+enterButton.className = 'enterButton';
+enterButton.innerText = "등록";
+enterButton.addEventListener("click", () => {
+  if(input.value.length === 0){
+    alert("할 일을 입력하세요.");
+    return ;
+  }
+
   todos.postTodo({
     id: todos.lastIdx,
     value: input.value,
   });
+
   input.value = "";
   input.focus();
   changeTodoList();
@@ -53,9 +61,10 @@ button.addEventListener("click", () => {
 
 app.append(inputBox);
 inputBox.append(input);
-inputBox.append(button);
+inputBox.append(enterButton);
 
 const todoListBox = document.createElement("div");
+todoListBox.className = 'todoListBox';
 app.append(todoListBox);
 
 const addUpdateEvent = () => {
@@ -85,6 +94,7 @@ const changeTodoList = () => {
 
   todos.todoList.forEach((todo) => {
     const todoItemBox = document.createElement("div");
+    todoItemBox.className = 'todoItemBox';
     todoItemBox.id = todo.id;
 
     const todoItem = document.createElement("span");
