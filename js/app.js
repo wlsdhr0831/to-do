@@ -10,6 +10,7 @@ const button = document.createElement('button');
 button.innerText = '등록';
 button.addEventListener('click', () => {
     todos.push(input.value);
+    input.value = '';
     changeTodoList();
 })
 
