@@ -1,76 +1,109 @@
+class TodoObject {
+  constructor({ todoList, lastIdx }) {
+    this.todoList = todoList;
+    this.lastIdx = lastIdx;
+  }
+
+  setTodoObject(object) {
+    return new TodoObject(object);
+  }
+
+  postTodo(item) {
+    this.todoList.push(item);
+    this.lastIdx++;
+  }
+
+  putTodo({ id, value }) {
+    this.todoList = this.todoList.map((todo) => {
+      if ("" + todo.id === id) {
+        return { id: todo.id, value };
+      } else return todo;
+    });
+  }
+
+  deleteTodo(id) {
+    this.todoList = this.todoList.filter((todo) => "" + todo.id !== id);
+  }
+}
+
 const app = document.getElementById("app");
 
-let todos = [];
+const todoList = [];
+const todos = new TodoObject({ todoList, lastIdx: 0 });
 
-const inputBox = document.createElement('div');
+const inputBox = document.createElement("div");
+const input = document.createElement("input");
+input.addEventListener("keypress", (e) => {
+  if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
+
+  button.click();
+});
+
+const button = document.createElement("button");
+button.innerText = "등록";
+button.addEventListener("click", () => {
+  todos.postTodo({
+    id: todos.lastIdx,
+    value: input.value,
+  });
+  input.value = "";
+  input.focus();
+  changeTodoList();
+});
+
 app.append(inputBox);
-
-const input = document.createElement('input');
-const button = document.createElement('button');
-button.innerText = '등록';
-button.addEventListener('click', () => {
-    todos.push(input.value);
-    input.value = '';
-    changeTodoList();
-})
-
 inputBox.append(input);
 inputBox.append(button);
 
-const todoList = document.createElement('div');
-app.append(todoList);
+const todoListBox = document.createElement("div");
+app.append(todoListBox);
 
 const addUpdateEvent = () => {
-    document.querySelectorAll('.update').forEach(updateButton => {
-        updateButton.addEventListener('click', e => {
-            const update = prompt("수정할 내용");
+  document.querySelectorAll(".update").forEach((updateButton) => {
+    updateButton.addEventListener("click", (e) => {
+      const value = prompt("수정할 내용을 입력하세요.");
 
-            if(update.length > 0){
-                todos = todos.map((todo, idx) => {
-                    if((idx+"") === e.target.id) {
-                        return update;
-                    }else return todo;
-                });
-            }
-            changeTodoList();
-        })  
+      if (value.length > 0) {
+        todos.putTodo({ id: e.target.parentElement.id, value });
+      }
+      changeTodoList();
     });
-}
+  });
+};
 
 const addRemoveEvent = () => {
-    document.querySelectorAll('.remove').forEach(removeButton => {
-        removeButton.addEventListener('click', e => {
-            todos = todos.filter((todo, idx) => (idx+"") !== e.target.id );
-            changeTodoList();
-        })  
+  document.querySelectorAll(".remove").forEach((removeButton) => {
+    removeButton.addEventListener("click", (e) => {
+      todos.deleteTodo(e.target.parentElement.id);
+      changeTodoList();
     });
-}
+  });
+};
 
 const changeTodoList = () => {
-    todoList.innerHTML = '';
+  todoListBox.innerHTML = "";
 
-    todos.forEach((todo, idx) => {
-        const todoItemBox = document.createElement('div');
+  todos.todoList.forEach((todo) => {
+    const todoItemBox = document.createElement("div");
+    todoItemBox.id = todo.id;
 
-        const todoItem = document.createElement('span');
-        todoItem.innerText = todo;
+    const todoItem = document.createElement("span");
+    todoItem.innerText = todo.value;
 
-        const updateButton = document.createElement('button');
-        updateButton.innerText = '수정';
-        updateButton.className = 'update';
-        updateButton.id = idx;
+    const updateButton = document.createElement("button");
+    updateButton.innerText = "수정";
+    updateButton.className = "update";
 
-        const removeButton = document.createElement('button');
-        removeButton.innerText = '삭제';
-        removeButton.className = 'remove';
-        removeButton.id = idx;
+    const removeButton = document.createElement("button");
+    removeButton.innerText = "삭제";
+    removeButton.className = "remove";
 
-        todoList.append(todoItemBox);
-        todoItemBox.append(todoItem);
-        todoItemBox.append(updateButton);
-        todoItemBox.append(removeButton);
-    })
+    todoListBox.append(todoItemBox);
+    todoItemBox.append(todoItem);
+    todoItemBox.append(updateButton);
+    todoItemBox.append(removeButton);
+  });
 
-    addUpdateEvent();
-    addRemoveEvent();
-}
+  addUpdateEvent();
+  addRemoveEvent();
+};
