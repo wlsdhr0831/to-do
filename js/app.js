@@ -22,8 +22,8 @@ class TodoObject {
       if ("" + todo.id === id) {
         return { 
           id: todo.id, 
-          value: value || todo.value, 
-          status: status || todo.status 
+          value: value === undefined ? todo.value : value, 
+          status: status === undefined ? todo.status : status 
         };
       } else {
         return todo;
@@ -114,12 +114,14 @@ function addRemoveEvent() {
   });
 };
 
-function addCheckedEvent(e){
+function addCheckedEvent(){
   document.querySelectorAll(".todoItemBox span").forEach((text) => {
     text.addEventListener("click", (e) => {
+      const nextStatus = e.target.classList.toggle('done');
+
       todos.putTodo({ 
         id: e.target.parentElement.id, 
-        status: e.target.classList.toggle('done'),
+        status: nextStatus,
       });
 
       changeTodoList();
