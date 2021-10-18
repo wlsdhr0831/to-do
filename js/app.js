@@ -2,6 +2,8 @@ class TodoObject {
   constructor({ todoList, lastIdx }) {
     this.todoList = todoList;
     this.lastIdx = lastIdx;
+    this.todoCnt = this.getCnt(false);
+    this.doneCnt = this.getCnt(true);
   }
 
   setTodoObject(object) {
@@ -11,47 +13,62 @@ class TodoObject {
   postTodo(item) {
     this.todoList.push(item);
     this.lastIdx++;
+    this.todoCnt = this.getCnt(false);
+    this.doneCnt = this.getCnt(true);
   }
 
-  putTodo({ id, value }) {
+  putTodo({ id, value, status }) {
     this.todoList = this.todoList.map((todo) => {
       if ("" + todo.id === id) {
-        return { id: todo.id, value };
-      } else return todo;
+        return { 
+          id: todo.id, 
+          value: value || todo.value, 
+          status: status || todo.status 
+        };
+      } else {
+        return todo;
+      }
     });
+    this.todoCnt = this.getCnt(false);
+    this.doneCnt = this.getCnt(true);
   }
 
   deleteTodo(id) {
     this.todoList = this.todoList.filter((todo) => "" + todo.id !== id);
+    this.todoCnt = this.getCnt(false);
+    this.doneCnt = this.getCnt(true);
+  }
+
+  getCnt(status){
+    let cnt = 0;
+
+    this.todoList.forEach(todo => {
+      if(todo.status === status){
+        cnt++;
+      }
+    });
+
+    return cnt;
   }
 }
 
-const app = document.getElementById("app");
+const todoList = [{ id: 0, value: "산책하기", status: false }];
+const todos = new TodoObject({ todoList, lastIdx: 1 });
+changeTodoList();
 
-const todoList = [];
-const todos = new TodoObject({ todoList, lastIdx: 0 });
-
-const inputBox = document.createElement("div");
-const input = document.createElement("input");
-input.placeholder = "할 일을 입력하세요.";
+const input = document.querySelectorAll(".inputBox input")[0];
 input.addEventListener("keypress", (e) => {
-  if (e.code !== "Enter" && e.code !== "NumpadEnter") return;
-
-  enterButton.click();
-});
-
-const enterButton = document.createElement("button");
-enterButton.className = 'enterButton';
-enterButton.innerText = "등록";
-enterButton.addEventListener("click", () => {
-  if(input.value.length === 0){
+  if(e.code !== "Enter" && e.code !== "NumpadEnter") {
+    return;
+  } else if (input.value.length === 0) {
     alert("할 일을 입력하세요.");
-    return ;
+    return;
   }
 
   todos.postTodo({
     id: todos.lastIdx,
     value: input.value,
+    status: false,
   });
 
   input.value = "";
@@ -59,37 +76,59 @@ enterButton.addEventListener("click", () => {
   changeTodoList();
 });
 
-app.append(inputBox);
-inputBox.append(input);
-inputBox.append(enterButton);
+const enterButton = document.querySelectorAll(".inputBox button")[0];
+enterButton.addEventListener("click", () => {
+  input.classList.toggle('hidden');
+});
 
-const todoListBox = document.createElement("div");
-todoListBox.className = 'todoListBox';
-app.append(todoListBox);
+function setPercent() {
+  const todoStatus = document.querySelectorAll(".status")[0];
+  let result = Math.floor(todos.doneCnt * 100/(todos.todoCnt + todos.doneCnt));
+  todoStatus.innerText = `${isNaN(result) ? 0 : result} %`;
+}
 
-const addUpdateEvent = () => {
+function addUpdateEvent() {
   document.querySelectorAll(".update").forEach((updateButton) => {
     updateButton.addEventListener("click", (e) => {
       const value = prompt("수정할 내용을 입력하세요.");
 
       if (value.length > 0) {
-        todos.putTodo({ id: e.target.parentElement.id, value });
+        todos.putTodo({ 
+          id: e.currentTarget.parentElement.id, 
+          value, 
+        });
       }
+
       changeTodoList();
     });
   });
 };
 
-const addRemoveEvent = () => {
+function addRemoveEvent() {
   document.querySelectorAll(".remove").forEach((removeButton) => {
     removeButton.addEventListener("click", (e) => {
-      todos.deleteTodo(e.target.parentElement.id);
+      todos.deleteTodo(e.currentTarget.parentElement.id);
+
       changeTodoList();
     });
   });
 };
 
-const changeTodoList = () => {
+function addCheckedEvent(e){
+  document.querySelectorAll(".todoItemBox span").forEach((text) => {
+    text.addEventListener("click", (e) => {
+      todos.putTodo({ 
+        id: e.target.parentElement.id, 
+        status: e.target.classList.toggle('done'),
+      });
+
+      changeTodoList();
+    });
+  });
+}
+
+function changeTodoList(){
+  const todoListBox = document.querySelectorAll(".todoListBox")[0];
   todoListBox.innerHTML = "";
 
   todos.todoList.forEach((todo) => {
@@ -97,23 +136,16 @@ const changeTodoList = () => {
     todoItemBox.className = 'todoItemBox';
     todoItemBox.id = todo.id;
 
-    const todoItem = document.createElement("span");
-    todoItem.innerText = todo.value;
-
-    const updateButton = document.createElement("button");
-    updateButton.innerText = "수정";
-    updateButton.className = "update";
-
-    const removeButton = document.createElement("button");
-    removeButton.innerText = "삭제";
-    removeButton.className = "remove";
+    const todoItem = `<span class="${todo.status && 'done'}">${todo.value}</span>`;
+    const updateButton = `<button class='update'><i class="fas fa-pen"></i></button>`;
+    const removeButton = `<button class='remove'><i class="fas fa-trash"></i></button>`;
 
     todoListBox.append(todoItemBox);
-    todoItemBox.append(todoItem);
-    todoItemBox.append(updateButton);
-    todoItemBox.append(removeButton);
+    todoItemBox.innerHTML = todoItem + updateButton + removeButton;
   });
 
+  addCheckedEvent();
   addUpdateEvent();
   addRemoveEvent();
+  setPercent();
 };
