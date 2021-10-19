@@ -37,6 +37,11 @@
   color: white;
 }
 
+.todoItemBox:hover .update,
+.todoItemBox:hover .remove{
+  opacity: 1;
+}
+
 .todoItemBox span{
   width: calc(100% - 110px);
   display: inline-block;
@@ -47,6 +52,26 @@
   cursor: pointer;
 }
 
+.update, .remove {
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  transition: all 0.2s ease-in;
+  opacity: 0;
+}
+
+.update {
+  color: var(--color-4);;
+}
+
+.remove{
+  color: var(--color-5);;
+}
+
+.update:hover, .remove:hover {
+  filter: brightness(130%);
+}
 .done{
-  color: lightgray;
+  color: rgb(139, 139, 139);
+  text-decoration: line-through;
 }
