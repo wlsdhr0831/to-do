@@ -54,33 +54,37 @@ class TodoObject {
 
 const todoList = [{ id: 0, value: "산책하기", status: false }];
 const todos = new TodoObject({ todoList, lastIdx: 1 });
-changeTodoList();
-
 const input = document.querySelectorAll(".inputBox input")[0];
-input.addEventListener("keypress", (e) => {
-  if(e.code !== "Enter" && e.code !== "NumpadEnter") {
-    return;
-  } else if (input.value.length === 0) {
-    alert("할 일을 입력하세요.");
-    return;
-  }
+const enterButton = document.querySelectorAll(".inputBox button")[0];
 
-  todos.postTodo({
-    id: todos.lastIdx,
-    value: input.value,
-    status: false,
+changeTodoList();
+init();
+
+function init(){
+  input.addEventListener("keypress", (e) => {
+    if(e.code !== "Enter" && e.code !== "NumpadEnter") {
+      return;
+    } else if (input.value.length === 0) {
+      alert("할 일을 입력하세요.");
+      return;
+    }
+
+    todos.postTodo({
+      id: todos.lastIdx,
+      value: input.value,
+      status: false,
+    });
+
+    input.value = "";
+    input.focus();
+    changeTodoList();
   });
 
-  input.value = "";
-  input.focus();
-  changeTodoList();
-});
-
-const enterButton = document.querySelectorAll(".inputBox button")[0];
-enterButton.addEventListener("click", (e) => {
-  input.classList.toggle('hidden');
-  e.currentTarget.classList.toggle('rotate');
-});
+  enterButton.addEventListener("click", (e) => {
+    input.classList.toggle('hidden');
+    e.currentTarget.classList.toggle('rotate');
+  });
+}
 
 function setPercent() {
   const todoStatus = document.querySelectorAll(".status")[0];
