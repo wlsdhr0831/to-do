@@ -35,7 +35,7 @@
 }
 
 .inputBox input::placeholder {
-  color: #FEC3A6;
+  color: var(--color-3);;
 }
 
 .inputBox .hidden{
@@ -47,13 +47,13 @@
 }
 
 .inputBox button {
-  color: #FEC3A6;
+  color: var(--color-3);
   background-color: white;
   border-radius: 15px;
 }
 
 .inputBox button:hover {
-  color: #FF928B;
+  color: var(--color-2);;
 }
 
 .rotate i{

@@ -18,13 +18,13 @@
 
 .todoItemBox{
   margin-bottom: 10px;
-  border: 2px solid #FEC3A6;
+  border: 2px solid var(--color-3);
   border-radius: 20px;
   padding: 10px;
 }
 
 .todoItemBox:hover{
-  background-color: #FEC3A6;
+  background-color: var(--color-3);
   color: white;
 }
 

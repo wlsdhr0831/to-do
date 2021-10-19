@@ -5,17 +5,13 @@
 }
 
 .update {
-  color: #EFE9AE;
-}
-
-.update:hover {
-  color: #f3e035;
+  color: var(--color-4);;
 }
 
 .remove{
-  color: #CDEAC0;
+  color: var(--color-5);;
 }
 
-.remove:hover{
-  color: #85cf63;;
+.update:hover, .remove:hover {
+  filter: brightness(130%);
 }
