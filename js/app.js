@@ -77,8 +77,9 @@ input.addEventListener("keypress", (e) => {
 });
 
 const enterButton = document.querySelectorAll(".inputBox button")[0];
-enterButton.addEventListener("click", () => {
+enterButton.addEventListener("click", (e) => {
   input.classList.toggle('hidden');
+  e.currentTarget.classList.toggle('rotate');
 });
 
 function setPercent() {

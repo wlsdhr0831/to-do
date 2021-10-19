@@ -17,3 +17,7 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
+
+i{
+  transition: all ease 0.5s;
+}
